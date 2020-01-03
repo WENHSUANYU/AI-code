@@ -37,7 +37,7 @@ model.summary()
 
 model.add(layers.Flatten())  # 將 3D 張量展開攤平為 1D, 其 shape = (576, )
 model.add(layers.Dense(64, activation='relu'))
-model.add(layers.Dense(4,activation='softmax'))
+model.add(layers.Dense(1,activation='softmax'))
 model.summary()
 
 
@@ -75,7 +75,12 @@ y_train = y_train.reshape((1,10, 76,1))
 y_train = y_train.astype('float32')/255
 
 x_test = np.array(x_test)
+x_test = x_test.reshape((1,60 ,76 , 1))
+x_test = x_test.astype('float32')/255
+
 y_test = np.array(y_test)
+y_test = y_test.reshape((1,15 ,76 , 1))
+y_test = y_test.astype('float32')/255
 print(X_train.shape)
 print(x_test.shape)
 print(y_train.shape)
@@ -86,7 +91,7 @@ print(y_test.shape)
 model.compile(optimizer='rmsprop',
 loss='categorical_crossentropy',
 metrics=['accuracy'])
-model.fit(X_train, x_test, epochs=5, batch_size=1)
+model.fit(X_train, y_train,validation_data=(x_test,y_test), epochs=5, batch_size=1)
 
 
 # 測試資料來評估 mode
