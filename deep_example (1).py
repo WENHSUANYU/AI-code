@@ -6,26 +6,29 @@
 # In[1]:
 
 
+from keras.layers import Convolution1D, MaxPooling1D
 
 from keras import layers  # 從 keras 套件匯入 layers, models 套件
 from keras import models
 import pandas as pd
 import numpy as np
-INPUT_ACTIONS = 5
+
 
 df = pd.read_csv("Data Set update2.csv",encoding="utf-8")
-# x11 = np.array(x1)
+
+
 model = models.Sequential()
-# print(df.head(20))
 
 
 		     #過濾器數量 ↓      ↓過濾器長寬
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(40
- , 76, 1))) # 加入 Covn2d 層
-model.add(layers.MaxPooling2D((2, 2))) # 進行 MaxPooling
-model.add(layers.Conv2D(32, (3, 3), activation='relu'))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+model.add(layers.Conv1D(128, kernel_size=1, strides=1,activation='relu', input_shape=(1
+ , 4))) # 加入 Covn1d 層
+model.add(layers.MaxPooling1D(1, strides=1)) # 進行 MaxPooling
+model.add(layers.Conv1D(86, (1), activation='relu'))
+model.add(layers.MaxPooling1D(1, strides=1))
+model.add(layers.Conv1D(64, (1), activation='relu'))
+
+
 
 model.summary()
 
@@ -35,9 +38,8 @@ model.summary()
 # In[2]:
 
 
-model.add(layers.Flatten())  # 將 3D 張量展開攤平為 1D, 其 shape = (576, )
 model.add(layers.Dense(64, activation='relu'))
-model.add(layers.Dense(1,activation='softmax'))
+model.add(layers.Dense(4,activation='softmax'))
 model.summary()
 
 
@@ -46,59 +48,41 @@ model.summary()
 # In[3]:
 
 
-# from keras.datasets import mnist
-from keras.utils import to_categorical
-from sklearn.model_selection import train_test_split
-Dependent = df.loc[:, "Class"]    # your "y"d
-#print(Dependent.shape)
+from keras.datasets import mnist
+from keras.utils import to_categorical 
+from sklearn.model_selection import train_test_split 
 
-Independent = df.loc[:, "AttributeX":"AttributeT"] # the rest of the columns (commonly refered to as "X"
-#print(Independent.shape)
-X_train, x_test, y_train, y_test = train_test_split(Independent, Dependent,test_size=0.6)
-# (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+df = np.array(df)
+np.random.shuffle(df)
+Dependent = df[:, 4:8] #y
+Independent = df[:, 0:4] # the rest of the columns (commonly refered to as "X"
 
-# df['split'] = np.random.randn(df.shape[0], 1)
+X_train, x_test, y_train, y_test = train_test_split(Independent, Dependent,test_size=0.4,random_state=42)
 
-# msk = np.random.rand(len(df)) <= 0.6
-
-# train = df[msk]
-# test = df[~msk]
-
-
-
-X_train = np.array(X_train)
-X_train = X_train.reshape((1,40 ,76 , 1))
+print(X_train.shape) 
+print(x_test.shape) 
+print(y_train.shape) 
+print(y_test.shape)
+print("--------------------------------------")
+X_train = X_train[:,np.newaxis]
 X_train = X_train.astype('float32')/255
 
-y_train = np.array(y_train)
-y_train = y_train.reshape((1,10, 76,1))
-y_train = y_train.astype('float32')/255
-
-x_test = np.array(x_test)
-x_test = x_test.reshape((1,60 ,76 , 1))
+x_test = x_test[:,np.newaxis]
+ 
 x_test = x_test.astype('float32')/255
+y_train = y_train[:,np.newaxis]
 
-y_test = np.array(y_test)
-y_test = y_test.reshape((1,15 ,76 , 1))
+y_train = y_train.astype('float32')/255
+y_test = y_test[:,np.newaxis]
 y_test = y_test.astype('float32')/255
-print(X_train.shape)
-print(x_test.shape)
-print(y_train.shape)
-print(y_test.shape)
-# x_test = to_categorical(x_test)
-#y_test = to_categorical(y_test)
 
-model.compile(optimizer='rmsprop',
+print(X_train.shape) 
+print(x_test.shape) 
+print(y_train.shape) 
+print(y_test.shape)
+
+model.compile(optimizer='Adagrad',
 loss='categorical_crossentropy',
 metrics=['accuracy'])
-model.fit(X_train, y_train,validation_data=(x_test,y_test), epochs=5, batch_size=1)
-
-
-# 測試資料來評估 mode
-
-# In[ ]:
-
-
-#test_loss, test_acc = model.evaluate(test_images, test_labels)
-#test_acc
+model.fit(X_train, y_train,validation_data=(x_test,y_test) ,epochs=5, batch_size=5)
 
