@@ -17,12 +17,12 @@ import numpy as np
 df = pd.read_csv("Data.csv",encoding="utf-8")
 model = models.Sequential()
 		     #過濾器數量 ↓      ↓過濾器長寬
-model.add(layers.Conv1D(128, kernel_size=1, strides=1,activation='relu', input_shape=(1
+model.add(layers.Conv1D(256, kernel_size=1, strides=1,activation='relu', input_shape=(1
  , 4))) # 加入 Covn1d 層
 model.add(layers.MaxPooling1D(1, strides=1)) # 進行 MaxPooling
-model.add(layers.Conv1D(64, (1), activation='relu'))
+model.add(layers.Conv1D(128, (1), activation='relu'))
 model.add(layers.MaxPooling1D(1, strides=1))
-model.add(layers.Conv1D(32, (1), activation='relu'))
+model.add(layers.Conv1D(64, (1), activation='relu'))
 model.summary()
 
 
@@ -72,7 +72,7 @@ print(x_test.shape)
 print(y_train.shape) 
 print(y_test.shape)
 
-model.compile(optimizer='rmsprop',
+model.compile(optimizer='Adam',
 loss='categorical_crossentropy',
 metrics=['accuracy'])
 model.fit(X_train, y_train,validation_data=(x_test,y_test) ,epochs=5, batch_size=4)
