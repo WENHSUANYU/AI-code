@@ -65,23 +65,23 @@ print(y_train.shape)
 print(y_test.shape)
 print("--------------------------------------")
 X_train = X_train[:,np.newaxis]
-X_train = X_train.astype('float32')/255
+X_train = X_train.astype('float32')/100
 
 x_test = x_test[:,np.newaxis]
  
-x_test = x_test.astype('float32')/255
+x_test = x_test.astype('float32')/100
 y_train = y_train[:,np.newaxis]
 
-y_train = y_train.astype('float32')/255
+y_train = y_train.astype('float32')/100
 y_test = y_test[:,np.newaxis]
-y_test = y_test.astype('float32')/255
+y_test = y_test.astype('float32')/100
 
 print(X_train.shape) 
 print(x_test.shape) 
 print(y_train.shape) 
 print(y_test.shape)
 
-model.compile(optimizer='Adagrad',
+model.compile(optimizer='Adam',
 loss='categorical_crossentropy',
 metrics=['accuracy'])
 model.fit(X_train, y_train,validation_data=(x_test,y_test) ,epochs=5, batch_size=5)
