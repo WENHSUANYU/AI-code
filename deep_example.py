@@ -20,9 +20,9 @@ model = models.Sequential()
 model.add(layers.Conv1D(128, kernel_size=1, strides=1,activation='relu', input_shape=(1
  , 4))) # 加入 Covn1d 層
 model.add(layers.MaxPooling1D(1, strides=1)) # 進行 MaxPooling
-model.add(layers.Conv1D(86, (1), activation='relu'))
-model.add(layers.MaxPooling1D(1, strides=1))
 model.add(layers.Conv1D(64, (1), activation='relu'))
+model.add(layers.MaxPooling1D(1, strides=1))
+model.add(layers.Conv1D(32, (1), activation='relu'))
 model.summary()
 
 
